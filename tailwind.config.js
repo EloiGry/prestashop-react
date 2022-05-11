@@ -1,6 +1,7 @@
 module.exports = {
     content: ["./src/pages/Home.jsx",
-  "./src/components/*.{html,js,jsx}"],
+  "./src/components/*.{html,js,jsx}",
+  "./src/components/icons/*.{html,js,jsx}"],
     theme: {
       screens: {
         sm: '480px',
