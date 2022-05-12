@@ -29,7 +29,7 @@ const OneProduct = () => {
     useEffect(() => {
         optionsValues()
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [product])
  
  
     // Call API 
@@ -73,6 +73,8 @@ const OneProduct = () => {
     const attribute_2 = filter?.filter(item => item.id_attribute_group === '2')
     const attribute_3 = filter?.filter(item => item.id_attribute_group === '3')
     const attribute_4 = filter?.filter(item => item.id_attribute_group === '4')
+
+    console.log(attribute_1);
 
 
     return (
