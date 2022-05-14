@@ -30,7 +30,7 @@ const NavBar = () => {
             <div className='flex items-center'>
                 {categories?.map(categorie => {
                     return (
-                        <Link key={categorie.id} to={categorie.link_rewrite} className='mx-2'> {categorie.name} </Link>
+                        <Link key={categorie.id} to={`/${categorie.link_rewrite}`} className='mx-2'> {categorie.name} </Link>
                     )
                 })}
             </div>

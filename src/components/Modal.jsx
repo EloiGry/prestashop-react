@@ -14,7 +14,7 @@ const Modal = ({ setModalOn, setChoice, src, attribute_1, attribute_2, attribute
 
     return (
         <> 
-        <div className=" bg-zinc-400 opacity-90 fixed inset-0 z-10">
+        <div className=" bg-zinc-700 opacity-90 fixed inset-0 z-10">
             <div className="flex h-screen justify-center items-center ">
 
                 <div className="flex-col justify-center  bg-white py-12 px-24 border-4 border-indigo-600 rounded-xl z-20 ">

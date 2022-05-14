@@ -58,8 +58,7 @@ const Home = () => {
     const attribute_3 = filter?.filter(item => item.id_attribute_group === '3')
     const attribute_4 = filter?.filter(item => item.id_attribute_group === '4')
 
-    console.log("m" ,modalData);
-    console.log("o", options);
+    console.log(products);
     return (
         <div>
             <NavBar/>
