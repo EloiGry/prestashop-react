@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import ShoppingCart from './icons/ShoppingCart';
 const apiKey = '3I6XUGSZG1Z7TYM9XV2MJNX8936HNQN7'
 const dataType = 'output_format=JSON'
 
@@ -34,9 +35,10 @@ const NavBar = () => {
                     )
                 })}
             </div>
-            <div className='flex mr-4'>
-                    <button className='bg-transparent text-indigo-600 px-5 py-1 mr-4'>Sign In</button>
-                    <button className='px-5 py-1'>Sign Up</button>
+            <div className='flex mr-4 items-center'>
+                <Link to='/cart' className='py-1 px-5'> <ShoppingCart /></Link>
+                <button className='bg-transparent text-indigo-600 px-5 py-1 mr-4'>Sign In</button>
+                <button className='px-5 py-1'>Sign Up</button>
             </div>
         </div>
     );

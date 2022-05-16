@@ -5,6 +5,7 @@ import OneProduct from './pages/OneProduct';
 import Clothes from './pages/Clothes';
 import Accessoires from './pages/Accessoires';
 import Art from './pages/Art';
+import Cart from './pages/Cart';
 import { OptionsContextProvider } from './context/options'
 
 
@@ -19,6 +20,7 @@ const App = () => {
             <Route exact path="/vetements" element={<Clothes/>}/>
             <Route exact path="/accessoires" element={<Accessoires/>}/>
             <Route exact path="/art" element={<Art/>}/>
+            <Route exact path="/cart" element={<Cart/>}/>
           </Routes>
         </OptionsContextProvider>
     </BrowserRouter>
