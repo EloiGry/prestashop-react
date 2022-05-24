@@ -6,6 +6,7 @@ import Clothes from './pages/Clothes';
 import Accessoires from './pages/Accessoires';
 import Art from './pages/Art';
 import Cart from './pages/Cart';
+import Login from './pages/Login';
 import { OptionsContextProvider } from './context/options'
 
 
@@ -21,6 +22,8 @@ const App = () => {
             <Route exact path="/accessoires" element={<Accessoires/>}/>
             <Route exact path="/art" element={<Art/>}/>
             <Route exact path="/cart" element={<Cart/>}/>
+            <Route exact path="/login" element={<Login/>}/>
+
           </Routes>
         </OptionsContextProvider>
     </BrowserRouter>
