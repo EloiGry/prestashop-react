@@ -20,6 +20,7 @@ const Clothes = () => {
     const [modalData, setModalData] = useState()
     const [filter, setFilter] =useState()
     const {options} = useContext(OptionsContext)
+   
 
     useEffect(() => {
       getProducts()
@@ -49,7 +50,7 @@ const Clothes = () => {
     const attribute_3 = filter?.filter(item => item.id_attribute_group === '3')
     const attribute_4 = filter?.filter(item => item.id_attribute_group === '4')
 
-
+   
     return (
         <div>
             <NavBar/>

@@ -7,6 +7,8 @@ import Search from '../components/icons/Search';
 import { Link } from 'react-router-dom';
 import Modal from '../components/Modal';
 import { OptionsContext } from "../context/options"
+import { UserContext } from '../context/User';
+// import Cookies from 'js-cookie'
 
 const apiKey = '3I6XUGSZG1Z7TYM9XV2MJNX8936HNQN7'
 const dataType = 'output_format=JSON'
@@ -19,6 +21,7 @@ const Home = () => {
     const [modalData, setModalData] = useState()
     const [filter, setFilter] =useState()
     const {options} = useContext(OptionsContext)
+    const {auth, user} = useContext(UserContext)
 
 
     useEffect(() => {
@@ -31,6 +34,17 @@ const Home = () => {
             const filter = options?.filter((item) => array.includes(item.id))
             setFilter(filter)
     }, [modalData])
+
+    // useEffect(() => {
+    //     readCookie()
+    // }, [])
+
+    // const readCookie = () => {
+    //     const user = Cookies.get('user_session')
+    //     if (user) {
+    //         setAuth(true)
+    //     }
+    // }
 
     const getProducts = async () => {
         console.count()
@@ -58,7 +72,8 @@ const Home = () => {
     const attribute_3 = filter?.filter(item => item.id_attribute_group === '3')
     const attribute_4 = filter?.filter(item => item.id_attribute_group === '4')
 
-    console.log(products);
+    console.log("auth", auth);
+    console.log("user", user);
     return (
         <div>
             <NavBar/>

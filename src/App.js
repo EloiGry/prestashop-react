@@ -8,6 +8,7 @@ import Art from './pages/Art';
 import Cart from './pages/Cart';
 import Signup from './pages/Signup';
 import { OptionsContextProvider } from './context/options'
+import { UserContextProvider } from './context/User';
 import Login from './pages/LogIn';
 
 
@@ -15,6 +16,7 @@ import Login from './pages/LogIn';
 const App = () => {
   return (
     <BrowserRouter>
+      <UserContextProvider>
       <OptionsContextProvider>
           <Routes>
             <Route exact path="/" element={<Home/>}/>
@@ -25,9 +27,9 @@ const App = () => {
             <Route exact path="/cart" element={<Cart/>}/>
             <Route exact path="/signup" element={<Signup/>}/>
             <Route exact path="/login" element={<Login/>}/>
-
           </Routes>
         </OptionsContextProvider>
+        </UserContextProvider>
     </BrowserRouter>
   );
 };

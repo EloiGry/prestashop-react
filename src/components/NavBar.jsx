@@ -1,13 +1,16 @@
 import React from 'react';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import ShoppingCart from './icons/ShoppingCart';
+import { UserContext } from '../context/User';
+import Cookies from 'js-cookie';
 const apiKey = '3I6XUGSZG1Z7TYM9XV2MJNX8936HNQN7'
 const dataType = 'output_format=JSON'
 
 const NavBar = () => {
     const [categories, setCategories] = useState(null)
+    const {auth, setAuth, setUser} = useContext(UserContext)
 
     useEffect(() => {
         getCategories()
@@ -24,6 +27,12 @@ const NavBar = () => {
         })
     }
 
+    const handleClick = () => {
+        Cookies.remove('user_session')
+        setAuth(false)
+        setUser(null)
+    }
+
 
     return (
         <div className='w-screen flex items-center justify-between bg-zinc-200 fixed drop-shadow-lg p-5'>
@@ -37,8 +46,9 @@ const NavBar = () => {
             </div>
             <div className='flex mr-4 items-center'>
                 <Link to='/cart' className='py-1 px-5'> <ShoppingCart /></Link>
-                <button className='bg-transparent text-indigo-600 px-5 py-1 mr-4'>Sign In</button>
-                <Link to='/signup'><button className='px-5 py-1'>Sign Up</button></Link>
+                {!auth && <Link to='/login'> <button className='bg-transparent text-indigo-600 px-5 py-1 mr-4'>Sign In</button> </Link>}
+                {!auth && <Link to='/signup'><button className='px-5 py-1'>Sign Up</button></Link>}
+                {auth && <button onClick={handleClick} className='bg-transparent text-indigo-600 px-5 py-1 mr-4'>Logout</button>}
             </div>
         </div>
     );

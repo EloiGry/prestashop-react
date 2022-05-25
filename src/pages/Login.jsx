@@ -1,14 +1,19 @@
 import bcrypt from 'bcryptjs';
 import React from 'react';
 import axios from 'axios';
-import { useRef } from 'react'
+import { useRef, useContext } from 'react';
+import { UserContext } from '../context/User';
+import Cookies from 'js-cookie'
+import { useNavigate } from 'react-router-dom';
 
 const apiKey = '3I6XUGSZG1Z7TYM9XV2MJNX8936HNQN7'
 const dataType = 'output_format=JSON'
 
 const Login = () => {
+    const {setAuth, setUser} = useContext(UserContext)
     const emailInputRef = useRef()
     const passwordInputRef = useRef()
+    const navigate = useNavigate()
 
     const handleLoginForm = () => {
         const email = emailInputRef.current.value
@@ -19,8 +24,11 @@ const Login = () => {
                 const compare = bcrypt.compare(password, response.data.customers[0].passwd.replace('$2y$', '$2a$'))
                 compare.then(function (log) {
                     if(log) {
-                        // set('user_session', response.data.customers[0].secure_key)
-                        return response
+                        console.log(response);
+                        Cookies.set('user_session', response.data.customers[0].secure_key, { expires: 7 })
+                        setAuth(true)
+                        setUser(response.data.customers[0])
+                        navigate('/')
                     }
                 })
                 .catch(function (error) {
