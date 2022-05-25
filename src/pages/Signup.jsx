@@ -1,6 +1,7 @@
 import React from 'react';
 import { useFormik } from 'formik'
 import axios from 'axios';
+import XMLParser from 'react-xml-parser';
 
 const Signup = () => {
 
@@ -38,27 +39,12 @@ var config = {
 
         await axios.post('http://localhost/shop/api/customers&ws_key=3I6XUGSZG1Z7TYM9XV2MJNX8936HNQN7', xmlBodyStr, config)
           .then(function (response) {
-            console.log(response);
+            var xml = new XMLParser().parseFromString(response.data); 
+            console.log(xml.children[0].children)
           })
           .catch(function (error) {
             console.log(error);
           });
-        // const response = await fetch(`http://localhost/shop/api/customers&ws_key=3I6XUGSZG1Z7TYM9XV2MJNX8936HNQN7`, {
-        //     method : 'post',
-        //     credentials: 'includes',
-        //     headers: {
-        //   'Accept': 'application/json, application/xml, text/plain, text/html, *.*'
-        // },
-        //     body:xmlBodyStr,
-        // })
-        // if(response.status >= 400) {
-        //     // alert("Error")
-        //     // const error = await response.json()
-        //     console.log("error" ,response)
-        // } else {
-        //     // const user = await response.json()
-        //     console.log("user", response)
-        // }
     }
 
     

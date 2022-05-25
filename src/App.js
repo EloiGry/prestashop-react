@@ -9,6 +9,7 @@ import Cart from './pages/Cart';
 import Signup from './pages/Signup';
 import { OptionsContextProvider } from './context/options'
 import { UserContextProvider } from './context/User';
+import { CartContextProvider } from './context/Cart';
 import Login from './pages/LogIn';
 
 
@@ -17,6 +18,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <UserContextProvider>
+      <CartContextProvider>
       <OptionsContextProvider>
           <Routes>
             <Route exact path="/" element={<Home/>}/>
@@ -29,6 +31,7 @@ const App = () => {
             <Route exact path="/login" element={<Login/>}/>
           </Routes>
         </OptionsContextProvider>
+        </CartContextProvider>
         </UserContextProvider>
     </BrowserRouter>
   );
