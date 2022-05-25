@@ -38,7 +38,7 @@ const NavBar = () => {
             <div className='flex mr-4 items-center'>
                 <Link to='/cart' className='py-1 px-5'> <ShoppingCart /></Link>
                 <button className='bg-transparent text-indigo-600 px-5 py-1 mr-4'>Sign In</button>
-                <button className='px-5 py-1'>Sign Up</button>
+                <Link to='/signup'><button className='px-5 py-1'>Sign Up</button></Link>
             </div>
         </div>
     );
