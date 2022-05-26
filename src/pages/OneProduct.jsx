@@ -11,11 +11,17 @@ const dataType = 'output_format=JSON'
 
 const OneProduct = () => {
     console.count("render numéro")
-     // Initial state, useEffect...
-
      const [product, setProduct] = useState(null)
-    //  const [options, setOptions] = useState(null)
      const [filter, setFilter] = useState(null)
+     const [size, setSize] = useState(1)
+     const [color, setColor] = useState()
+     const [measure, setMeasure] = useState()
+     const [shape, setShape] = useState()
+    //  const [attribute1, setAttribute1] = useState([])
+    //  const [attribute2, setAttribute2] = useState([])
+    //  const [attribute3, setAttribute3] = useState([])
+    //  const [attribute4, setAttribute4] = useState([])
+     const [counter, setCounter] = useState(1)
      const {id} = useParams()
      const {options} = useContext(OptionsContext)
      
@@ -28,8 +34,10 @@ const OneProduct = () => {
 
     useEffect(() => {
         optionsValues()
+        
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [product])
+
  
  
     // Call API 
@@ -44,16 +52,6 @@ const OneProduct = () => {
             })
     }
 
-    // const getOptionsProducts = async () => {
-    //     await axios.get(`http://localhost/shop/api/product_option_values&display=full&filter[id_attribute_group]=[1,4]&ws_key=${apiKey}?${dataType}`)
-    //         .then(function (response) {
-    //             const options = response.data.product_option_values
-    //             setOptions(options)
-    //         })
-    //         .catch(function (error) {
-    //             console.log(error);
-    //         })
-    // }
 
     const optionsValues = async() => {
         let array = []
@@ -62,21 +60,56 @@ const OneProduct = () => {
             setFilter(filter)
     }
     
-
+   
+        const attribute1 = filter?.filter(item => item.id_attribute_group === '1')
+        const attribute2 = filter?.filter(item => item.id_attribute_group === '2')
+        const attribute3 = filter?.filter(item => item.id_attribute_group === '3')
+        const attribute4 = filter?.filter(item => item.id_attribute_group === '4')
+       
     if (!product || !options) {
         return (
             <p>Loading...</p>
         )
     }
 
-    const attribute_1 = filter?.filter(item => item.id_attribute_group === '1')
-    const attribute_2 = filter?.filter(item => item.id_attribute_group === '2')
-    const attribute_3 = filter?.filter(item => item.id_attribute_group === '3')
-    const attribute_4 = filter?.filter(item => item.id_attribute_group === '4')
 
-    console.log(attribute_1);
+    const handleSize = (event) => {
+        const select = event.target;
+        const id = select.children[select.selectedIndex].id;
+        setSize(id)
+    }
 
+    const handleMeasure = (event) => {
+        const select = event.target;
+        const id = select.children[select.selectedIndex].id;
+        setMeasure(id)
+    }
 
+    const handleShape = (event) => {
+        const select = event.target;
+        const id = select.children[select.selectedIndex].id;
+        setShape(id)
+    }
+
+    const handleMinusClick = () => {
+        if(counter > 0) {
+            setCounter(counter -1)
+        }
+    }
+
+    const handlePlusClick = () => {
+        setCounter(counter + 1)
+    }
+
+    const handleClickCart = () => {
+        console.log(product);
+    }
+    
+
+    console.log("size" ,size);
+    console.log("color" ,color);
+    console.log("measure" ,measure);
+    console.log("shape" ,shape);
     return (
         <div>
             <NavBar/>
@@ -85,29 +118,31 @@ const OneProduct = () => {
                 <div className='pl-10'>
                     <p className='px-2 font-bold truncate pt-2 my-2'>{product.name}</p>  
                     <p className='px-2 font-semibold pb-2 my-2'> {Number(product.price).toFixed(2)}€</p>
-                    <p> {product.description_short.replace(/<p[^>]*>/g, "").replace(/<\/?p[^>]*>/g, "")} </p>
-                    <p> {product.description.replace(/<p[^>]*>/g, "").replace(/<\/?p[^>]*>/g, "")} </p>
+                    <p className='text-sm'> {product.description_short.replace(/<p[^>]*>/g, "").replace(/<\/?p[^>]*>/g, "")} </p>
+                    <p className='text-sm'> {product.description.replace(/<p[^>]*>/g, "").replace(/<\/?p[^>]*>/g, "")} </p>
                     <div> 
-                        {attribute_1?.length > 0 &&
+                        {attribute1?.length > 0 &&
+                        <>
                             <label className="mt-4 flex items-center">
                             <p className="mr-2">Taille : </p>
-                            <select className="form-select ml-2 block w-20 border-2">
-                                {attribute_1.map(item => {
+                            <select className="form-select ml-2 block w-20 border-2" onChange={handleSize}>
+                                {attribute1.map(item => {
                                     return (
-                                        <option key={item.id}>{item.name}</option>
+                                        <option key={item.id} id={item.id}>{item.name}</option>
                                     )
                                 })}
                             </select>
                           </label>
+                        </>
                         } 
                     </div>
                     <div>
-                        {attribute_2?.length > 0 && 
+                        {attribute2?.length > 0 && 
                         <div className='flex'> 
                             <p> Couleur :  </p>
-                            {attribute_2.map(item => {
+                            {attribute2.map(item => {
                                 return (
-                                    <button key={item.id} className='w-5 m-1' style={{backgroundColor: item.color, border: '1px solid black'}}> </button>
+                                    <button key={item.id} className='w-5 m-1' style={{backgroundColor: item.color, border: '1px solid black'}} onClick={() => setColor(item.id)}> </button>
                                 )
                             })}
 
@@ -115,13 +150,13 @@ const OneProduct = () => {
                         } 
                     </div>
                     <div> 
-                        {attribute_3?.length > 0 &&
+                        {attribute3?.length > 0 &&
                             <label className="mt-4 flex items-center">
-                            <p className="mr-2">Taille : </p>
-                            <select className="form-select ml-2 block w-25 border-2">
-                                {attribute_3.map(item => {
+                            <p className="mr-2">Mesure : </p>
+                            <select className="form-select ml-2 block w-25 border-2" onChange={handleMeasure}>
+                                {attribute3.map(item => {
                                     return (
-                                        <option key={item.id}>{item.name}</option>
+                                        <option key={item.id} id={item.id}>{item.name}</option>
                                     )
                                 })}
                             </select>
@@ -129,21 +164,24 @@ const OneProduct = () => {
                         } 
                     </div>
                     <div>
-                        {attribute_4?.length > 0 && 
+                        {attribute4?.length > 0 && 
                             <label className="mt-4 flex items-center">
                                 <p className="mr-2">Forme : </p>
-                                <select className="form-select ml-2 block w-25 border-2">
-                                    {attribute_4.map(item => {
+                                <select className="form-select ml-2 block w-25 border-2" onChange={handleShape}>
+                                    {attribute4.map(item => {
                                         return (
-                                            <option key={item.id}>{item.name}</option>
+                                            <option key={item.id} id={item.id}>{item.name}</option>
                                         )
                                     })}
                                 </select>
                           </label>
                         } 
                     </div>
+                    <div>
+                        <p> Quantity : <button className='w-5 m-1' onClick={handleMinusClick}> - </button> {counter} <button className='w-5 m-1' onClick={handlePlusClick}> + </button></p>
+                    </div>
                     <div className='my-2'>
-                        <button className='px-5 py-1 w-full flex justify-center items-center'>
+                        <button className='px-5 py-1 w-full flex justify-center items-center' onClick={handleClickCart}>
                             <p> Ajouter au panier </p>
                             <ShoppingCart/>
                         </button>

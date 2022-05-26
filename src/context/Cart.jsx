@@ -54,21 +54,6 @@ var config = {
           .catch(function (error) {
             console.log(error);
           });
-        // const response = await fetch (`${API}`, {
-        //     method: 'post',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     credentials: 'include',
-        //     body: JSON.stringify(values)
-        // })
-        // if(response.status >= 400) {
-        //     console.log("error");
-        // } else {
-        //     const cart = await response.json()
-        //     setCart(cart)
-        //     localStorage.setItem("id", cart._id)
-        // }
     }
 
     const modifyCart = async (id, userId) => {
@@ -91,20 +76,6 @@ var config = {
               .catch(function (error) {
                 console.log(error);
               });
-        // const response = await fetch (`${API}/${id}`, {
-        //     method: 'put',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     credentials: 'include',
-        //     body: JSON.stringify(values)
-        // })
-        // if(response.status >= 400) {
-        //     console.log("error");
-        // } else {
-        //     const cartModified = await response.json()
-            
-        // }
     }
 
   
@@ -131,8 +102,6 @@ var config = {
         setCart,
         fetchOneCart,
         createCart,
-        // selectedDay, 
-        // setSelectedDay
     }
 
     return (
