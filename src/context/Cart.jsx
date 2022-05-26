@@ -1,6 +1,6 @@
 import { createContext, useState,useEffect , useContext } from "react";
 import { UserContext } from "./User";
-import XMLParser from 'react-xml-parser';
+// import XMLParser from 'react-xml-parser';
 import axios from "axios";
 const CartContext = createContext({})
 
@@ -10,85 +10,71 @@ const dataType = 'output_format=JSON'
 const CartContextProvider = props => {
     const {user, setUser} = useContext(UserContext)
     const [cart, setCart] = useState()
-    // const [selectedDay, setSelectedDay] = useState()
+
 
     
     useEffect(() => {
         
-        if(localStorage.getItem("id")) {
-            fetchOneCart(localStorage.getItem("id"))
-        }else {
-            createCart()
-        }
-
-        if(user){
-            if(!cart[4].value || !cart[4].value == 0) {
-                modifyCart(cart[0].value, user.id)  
-            }
-        }
+        getOneCart()
     },[])
 
 
 
     
-const createCart = async() => {
-    var xmlBodyStr = `<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
-    <cart>
-      <id_currency>1</id_currency>
-      <id_lang>1</id_lang>
-    </cart>
-  </prestashop>
-  `
+// const createCart = async() => {
+//     var xmlBodyStr = `<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+//     <cart>
+//       <id_currency>1</id_currency>
+//       <id_lang>1</id_lang>
+//     </cart>
+//   </prestashop>
+//   `
 
-var config = {
-    headers: {'Accept': 'application/json, application/xml, text/plain, text/html, *.*'}
-};
+// var config = {
+//     headers: {'Accept': 'application/json, application/xml, text/plain, text/html, *.*'}
+// };
 
-        await axios.post(`http://localhost/shop/api/carts&ws_key=${apiKey}`, xmlBodyStr, config)
-          .then(function (response) {
-            var xml = new XMLParser().parseFromString(response.data); 
-            const cart = xml.children[0].children
-            setCart(cart)
-            localStorage.setItem("id", cart[0].value)
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-    }
+//         await axios.post(`http://localhost/shop/api/carts&ws_key=${apiKey}`, xmlBodyStr, config)
+//           .then(function (response) {
+//             var xml = new XMLParser().parseFromString(response.data); 
+//             const cart = xml.children[0].children
+//             setCart(cart)
+//             localStorage.setItem("id", cart[0].value)
+//           })
+//           .catch(function (error) {
+//             console.log(error);
+//           });
+//     }
 
-    const modifyCart = async (id, userId) => {
-        var xmlBodyStr = `<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
-        <cart>
-          <id_customer>${userId}</id_customer>
-        </cart>
-      </prestashop>
-      `
+    // const modifyCart = async (id, userId) => {
+    //     var xmlBodyStr = `<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+    //     <cart>
+    //       <id_customer>${userId}</id_customer>
+    //     </cart>
+    //   </prestashop>
+    //   `
     
-    var config = {
-        headers: {'Accept': 'application/json, application/xml, text/plain, text/html, *.*'}
-    };
+    // var config = {
+    //     headers: {'Accept': 'application/json, application/xml, text/plain, text/html, *.*'}
+    // };
     
-            await axios.put(`http://localhost/shop/api/carts/${id}&ws_key=${apiKey}`, xmlBodyStr, config)
-              .then(function (response) {
-                var xml = new XMLParser().parseFromString(response.data); 
-                const cartModified = xml.children[0].children[4].value
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
-    }
+    //         await axios.put(`http://localhost/shop/api/carts/${id}&ws_key=${apiKey}`, xmlBodyStr, config)
+    //           .then(function (response) {
+    //             var xml = new XMLParser().parseFromString(response.data); 
+    //             const cartModified = xml.children[0].children[4].value
+    //           })
+    //           .catch(function (error) {
+    //             console.log(error);
+    //           });
+    // }
 
   
 
-    const fetchOneCart = async(id) => {
+    const getOneCart = async(id) => {
         await axios.get(`http://localhost/shop/api/carts/${id}&ws_key=${apiKey}?${dataType}`)
             .then(function (response) {
                 const cart = response.data.cart
-                if (!cart) {
-                    createCart()
-                } else {
-                    setCart(cart)
-                }
+                setCart(cart)
             })
 
             .catch(function (error) {
@@ -100,8 +86,7 @@ var config = {
     const value = {
         cart,
         setCart,
-        fetchOneCart,
-        createCart,
+        getOneCart,
     }
 
     return (

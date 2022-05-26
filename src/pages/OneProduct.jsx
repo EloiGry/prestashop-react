@@ -5,6 +5,9 @@ import { useParams} from 'react-router-dom'
 import NavBar from '../components/NavBar';
 import ShoppingCart from '../components/icons/ShoppingCart';
 import { OptionsContext } from "../context/options"
+import { UserContext } from '../context/User';
+import { CartContext } from '../context/Cart';
+
 
 const apiKey = '3I6XUGSZG1Z7TYM9XV2MJNX8936HNQN7'
 const dataType = 'output_format=JSON'
@@ -12,24 +15,28 @@ const dataType = 'output_format=JSON'
 const OneProduct = () => {
     console.count("render numéro")
      const [product, setProduct] = useState(null)
+     const [combinations, setCombinations] = useState(null)
+     const [productAttribute, setProductAttribute] = useState()
      const [filter, setFilter] = useState(null)
      const [size, setSize] = useState(1)
      const [color, setColor] = useState()
      const [measure, setMeasure] = useState()
      const [shape, setShape] = useState()
-    //  const [attribute1, setAttribute1] = useState([])
-    //  const [attribute2, setAttribute2] = useState([])
-    //  const [attribute3, setAttribute3] = useState([])
-    //  const [attribute4, setAttribute4] = useState([])
      const [counter, setCounter] = useState(1)
      const {id} = useParams()
      const {options} = useContext(OptionsContext)
-     
+     const {user} = useContext(UserContext)
+     const {cart, setCart, getOneCart} = useContext(CartContext)
  
      useEffect(() => {
          getProduct()
          // eslint-disable-next-line react-hooks/exhaustive-deps
      }, [])
+
+     useEffect(() => {
+        getCombinations()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
 
     useEffect(() => {
@@ -38,7 +45,9 @@ const OneProduct = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [product])
 
- 
+    useEffect(() => {
+        createCart()
+    }, [productAttribute])
  
     // Call API 
     const getProduct = async () => {
@@ -51,6 +60,50 @@ const OneProduct = () => {
                 console.log(error);
             })
     }
+
+    const getCombinations = async() => {
+        await axios.get(`http://localhost/shop/api/combinations&display=full&ws_key=${apiKey}?${dataType}`)
+            .then(function (response) {
+                const combinations = response.data.combinations
+                setCombinations(combinations)
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+
+    }
+
+    const createCart = async() => {
+        var xmlBodyStr = `<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+        <cart>
+          <id_currency>1</id_currency>
+          <id_customer>${user ? user.id : "<![CDATA[]]>"}</id_customer>
+          <id_lang>1</id_lang>
+          <associations>
+            <cart_rows>
+              <cart_row>
+                <id_product>${product.id}</id_product>
+                <id_product_attribute>${productAttribute}</id_product_attribute>
+                <quantity>${counter}</quantity>
+              </cart_row>
+            </cart_rows>
+          </associations>
+        </cart>
+      </prestashop>
+      `
+    
+    var config = {
+        headers: {'Accept': 'application/json, application/xml, text/plain, text/html, *.*'}
+    };
+    
+            await axios.post(`http://localhost/shop/api/carts&ws_key=${apiKey}`, xmlBodyStr, config)
+              .then(function (response) {
+                console.log(response.data)
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+        }
 
 
     const optionsValues = async() => {
@@ -100,16 +153,32 @@ const OneProduct = () => {
     const handlePlusClick = () => {
         setCounter(counter + 1)
     }
-
-    const handleClickCart = () => {
-        console.log(product);
-    }
+    
     
 
-    console.log("size" ,size);
-    console.log("color" ,color);
-    console.log("measure" ,measure);
-    console.log("shape" ,shape);
+    const getProductAttribute = () => {
+        let array = []
+        if (typeof size !== 'undefined') {
+            array.push({id: size.toString()})
+        }
+        if (typeof color !== 'undefined') {
+            array.push({id: color.toString()})
+        }
+        if (typeof measure !== 'undefined') {
+            array.push({id: measure.toString()})
+        }
+        if (typeof shape !== 'undefined') {
+            array.push({id: shape.toString()})
+        }
+        const findCombination = combinations.find(item => JSON.stringify(item.associations.product_option_values) == JSON.stringify(array));
+        setProductAttribute(findCombination.id)
+        
+    }
+
+    console.log("product" ,product.id);
+    console.log("pa" ,productAttribute);
+    console.log("counter" ,counter);
+    
     return (
         <div>
             <NavBar/>
@@ -181,7 +250,7 @@ const OneProduct = () => {
                         <p> Quantity : <button className='w-5 m-1' onClick={handleMinusClick}> - </button> {counter} <button className='w-5 m-1' onClick={handlePlusClick}> + </button></p>
                     </div>
                     <div className='my-2'>
-                        <button className='px-5 py-1 w-full flex justify-center items-center' onClick={handleClickCart}>
+                        <button className='px-5 py-1 w-full flex justify-center items-center' onClick={getProductAttribute}>
                             <p> Ajouter au panier </p>
                             <ShoppingCart/>
                         </button>
