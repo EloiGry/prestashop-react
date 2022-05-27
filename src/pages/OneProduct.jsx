@@ -1,5 +1,8 @@
 import React from 'react';
 import axios from 'axios';
+
+import XMLParser from 'react-xml-parser';
+
 import { useEffect, useState, useContext} from 'react';
 import { useParams} from 'react-router-dom'
 import NavBar from '../components/NavBar';
@@ -7,6 +10,7 @@ import ShoppingCart from '../components/icons/ShoppingCart';
 import { OptionsContext } from "../context/options"
 import { UserContext } from '../context/User';
 import { CartContext } from '../context/Cart';
+var js2xmlparser = require("js2xmlparser")
 
 
 const apiKey = '3I6XUGSZG1Z7TYM9XV2MJNX8936HNQN7'
@@ -18,7 +22,7 @@ const OneProduct = () => {
      const [combinations, setCombinations] = useState(null)
      const [productAttribute, setProductAttribute] = useState()
      const [filter, setFilter] = useState(null)
-     const [size, setSize] = useState(1)
+     const [size, setSize] = useState()
      const [color, setColor] = useState()
      const [measure, setMeasure] = useState()
      const [shape, setShape] = useState()
@@ -38,7 +42,6 @@ const OneProduct = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-
     useEffect(() => {
         optionsValues()
         
@@ -46,8 +49,18 @@ const OneProduct = () => {
     }, [product])
 
     useEffect(() => {
-        createCart()
+        if(localStorage.getItem("id")) {
+            modifyCart(localStorage.getItem("id"))
+        } else {
+            createCart()
+        }
     }, [productAttribute])
+
+    useEffect(() => {
+        if (Array.isArray(cart)) {
+            getOneCart(cart[0].value.replace(/[^\w\s]/gi, ''))
+        }
+    }, [cart])
  
     // Call API 
     const getProduct = async () => {
@@ -98,12 +111,65 @@ const OneProduct = () => {
     
             await axios.post(`http://localhost/shop/api/carts&ws_key=${apiKey}`, xmlBodyStr, config)
               .then(function (response) {
-                console.log(response.data)
+                  var xml = new XMLParser().parseFromString(response.data);
+                  const cart = xml.children[0].children
+                  setCart(cart)
+                  localStorage.setItem("id", cart[0].value.replace(/[^\w\s]/gi, ''))
               })
               .catch(function (error) {
                 console.log(error);
               });
         }
+
+        const modifyCart = async() => {
+            let array = []
+
+            
+            cart.associations.cart_rows.forEach(item => {
+                const xml = js2xmlparser.parse("cart_row", item)
+                const newXml = xml.replace("<?xml version='1.0'?>", "")
+                array.push(newXml)
+            })
+
+            console.log(array);
+
+            var xmlBodyStr = `<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+        <cart>
+          <id_currency>1</id_currency>
+          <id_customer>${user ? user.id : "<![CDATA[]]>"}</id_customer>
+          <id_lang>1</id_lang>
+          <associations>
+            <cart_rows>
+              <cart_row>
+                <id_product>${product.id}</id_product>
+                <id_product_attribute>${productAttribute}</id_product_attribute>
+                <quantity>${counter}</quantity>
+              </cart_row>
+              ${array}
+            </cart_rows>
+          </associations>
+        </cart>
+      </prestashop>
+      `
+    // delete cart 
+    var config = {
+        headers: {'Accept': 'application/json, application/xml, text/plain, text/html, *.*'}
+    };
+    
+            await axios.post(`http://localhost/shop/api/carts&ws_key=${apiKey}`, xmlBodyStr, config)
+              .then(function (response) {
+                  var xml = new XMLParser().parseFromString(response.data);
+                  const cart = xml.children[0].children
+                  console.log(cart);
+                  //delete locale storage and set a new one
+                //   setCart(cart)
+                //   localStorage.setItem("id", cart[0].value.replace(/[^\w\s]/gi, ''))
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+            
+            }
 
 
     const optionsValues = async() => {
@@ -172,12 +238,12 @@ const OneProduct = () => {
         }
         const findCombination = combinations.find(item => JSON.stringify(item.associations.product_option_values) == JSON.stringify(array));
         setProductAttribute(findCombination.id)
-        
     }
 
-    console.log("product" ,product.id);
-    console.log("pa" ,productAttribute);
-    console.log("counter" ,counter);
+    // console.log(combinations)
+    // console.log("measure" ,measure);
+    console.log("cart", cart);
+    // console.log(product);
     
     return (
         <div>

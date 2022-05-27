@@ -14,8 +14,9 @@ const CartContextProvider = props => {
 
     
     useEffect(() => {
-        
-        getOneCart()
+        if (localStorage.getItem("id")) {
+            getOneCart(localStorage.getItem("id"))
+        }
     },[])
 
 
