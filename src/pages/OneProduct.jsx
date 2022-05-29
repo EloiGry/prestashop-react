@@ -86,6 +86,17 @@ const OneProduct = () => {
 
     }
 
+    const deleteCart = async(id) => {
+        await axios.get(`http://localhost/shop/api/carts/${id}&ws_key=${apiKey}?${dataType}`)
+            .then(function (response) {
+                console.log(response);
+            })
+
+            .catch(function (error) {
+                console.log(error);
+            })
+    }
+
     const createCart = async() => {
         var xmlBodyStr = `<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
         <cart>
@@ -158,12 +169,12 @@ const OneProduct = () => {
     
             await axios.post(`http://localhost/shop/api/carts&ws_key=${apiKey}`, xmlBodyStr, config)
               .then(function (response) {
+                  deleteCart(cart.id)
                   var xml = new XMLParser().parseFromString(response.data);
-                  const cart = xml.children[0].children
-                  console.log(cart);
-                  //delete locale storage and set a new one
-                //   setCart(cart)
-                //   localStorage.setItem("id", cart[0].value.replace(/[^\w\s]/gi, ''))
+                  const newCart = xml.children[0].children
+                  localStorage.removeItem('id')
+                  setCart(newCart)
+                  localStorage.setItem("id", newCart[0].value.replace(/[^\w\s]/gi, ''))
               })
               .catch(function (error) {
                 console.log(error);
