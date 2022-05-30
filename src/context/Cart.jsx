@@ -1,5 +1,4 @@
 import { createContext, useState,useEffect , useContext } from "react";
-import { UserContext } from "./User";
 // import XMLParser from 'react-xml-parser';
 import axios from "axios";
 const CartContext = createContext({})
@@ -8,7 +7,7 @@ const apiKey = '3I6XUGSZG1Z7TYM9XV2MJNX8936HNQN7'
 const dataType = 'output_format=JSON'
 
 const CartContextProvider = props => {
-    const {user, setUser} = useContext(UserContext)
+
     const [cart, setCart] = useState()
 
 
